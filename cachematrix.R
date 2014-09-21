@@ -11,14 +11,34 @@
 
 
 makeCacheMatrix <- function(x = matrix()) {
-        m_invsr <- NULL
-        setmatrix <- function(y) {
-                x <<- y
-                m_invsr <<- NULL
-        }
-        getmatrix <- function() x
-        setinverse <- function(inverse) m_invsr <<- inverse
-        getinverse <- function() m_invsr
+        # m_invsr-- is the object storing the inverse of the matrix
+                m_invsr <- NULL
+        
+        # First Function for setting the Matrix object and Inverse Object (as null)
+                
+                setmatrix <- function(y) {
+                   x <<- y
+                   m_invsr <<- NULL
+                 }
+        
+        
+        # Second function to get the matrix object "x" 
+                
+                getmatrix <- function() x
+        
+        
+        # third function to set inverse of the Matrix "x", this is important because caching is done here
+                
+                setinverse <- function(inverse) m_invsr <<- inverse
+        
+        
+        # fourth function to get the inverse of the matrix object "x"
+                
+                getinverse <- function() m_invsr
+        
+        
+        # finaaly the list of function to be returned when the function makeCacheMatrix will be called  
+        
         list(setmatrix  = setmatrix , getmatrix = getmatrix ,
              setinverse = setinverse ,
              getinverse = getinverse )
@@ -35,13 +55,26 @@ makeCacheMatrix <- function(x = matrix()) {
 
 cacheSolve <- function(x, ...) {
         ## Return a matrix that is the inverse of 'x'
-        m_invsr <- x$getinverse()
-        if(!is.null(m_invsr)) {
-                message("getting cached inverse")
-                return(m_invsr)
-        }
-        matrix_passed <- x$getmatrix()
-        m_invsr <- solve(matrix_passed, ...)
-        x$setinverse(m_invsr)
+        
+        # The inverse of the matrix is pulled from the function getinverse()
+                m_invsr <- x$getinverse()
+        
+                ## the value of m_invsr object is tested against NULL,
+                ## if not null then cached value will be returned.
+                
+                        if(!is.null(m_invsr)) {
+                                 message("getting cached inverse")
+                         return(m_invsr)
+                         }
+                
+                ## else the inverse of the matrix will be computed here, in steps 
+                        matrix_passed <- x$getmatrix()  #--->here the matrix object is retrived
+                
+                        m_invsr <- solve(matrix_passed, ...) #---> over here the inverse is calculated
+        
+                        x$setinverse(m_invsr) # ---> here the m_invsr object is cached by the function 'setinverse'
+                
+        
+        # finally the inverse is computed and returned 
         m_invsr
 }
